@@ -1,0 +1,1 @@
+ALTER TABLE machines MODIFY COLUMN owner_employee_id BIGINT UNSIGNED NULL;
