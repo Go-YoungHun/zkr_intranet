@@ -1,0 +1,16 @@
+ssh -i zkr-key.pem ec2-user@3.34.3.82
+
+cd ~/apps/zkr_intranet
+git fetch origin
+git reset --hard origin/main
+
+npm install
+pm2 restart zkr-api
+
+cd ~/apps/zkr_intranet/client
+npm install
+npm run build
+
+sudo rsync -av --delete dist/ /var/www/zkr-intranet/dist/
+sudo nginx -t
+sudo systemctl reload nginx
