@@ -573,19 +573,26 @@ router.put("/:id", requireAuth, async (req, res) => {
       }
     }
 
-    let resolvedOwnerEmployeeId =
-      owner_employee_id === "" || owner_employee_id === undefined
-        ? null
-        : Number(owner_employee_id);
-    if (Number.isNaN(resolvedOwnerEmployeeId)) {
-      return res.status(400).json({ message: "owner_employee_id is invalid" });
-    }
-    if (resolvedOwnerEmployeeId) {
-      const owner = await Employee.findByPk(resolvedOwnerEmployeeId);
-      if (!owner) {
+    let resolvedOwnerEmployeeId = null;
+    if (
+      owner_employee_id !== "" &&
+      owner_employee_id !== undefined &&
+      owner_employee_id !== null
+    ) {
+      const parsedOwnerEmployeeId = Number(owner_employee_id);
+      if (Number.isNaN(parsedOwnerEmployeeId)) {
         return res
           .status(400)
           .json({ message: "owner_employee_id is invalid" });
+      }
+      if (parsedOwnerEmployeeId !== 0) {
+        resolvedOwnerEmployeeId = parsedOwnerEmployeeId;
+        const owner = await Employee.findByPk(resolvedOwnerEmployeeId);
+        if (!owner) {
+          return res
+            .status(400)
+            .json({ message: "owner_employee_id is invalid" });
+        }
       }
     }
 
